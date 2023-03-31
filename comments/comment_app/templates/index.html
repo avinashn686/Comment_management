@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="comment management home page.">
+    <meta name="author" content="Devcrud">
+    <title>COMMENTS</title>
+    <!-- font icons -->
+    <link rel="stylesheet" href="{% static 'vendors/themify-icons/css/themify-icons.css' %}">
+    <!-- Bootstrap + JoeBLog main styles -->
+	<link rel="stylesheet" href="{% static 'css/joeblog.css' %}">
+</head>
+<body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
+    
+    <nav class="navbar custom-navbar navbar-expand-md navbar-light bg-primary sticky-top">
+        <div class="container">
+            <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse text-center" id="navbarSupportedContent">
+                <ul class="navbar-nav">                     
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End Of Page Second Navigation -->
+    
+    <!-- page-header -->
+    <br>
+    <br>
+    <br>
+    <section class="container">
+        <div class="page-container">
+            <div class="page-content">
+                <div class="card">
+                    <div class="card-header pt-0">
+                    </div>
+                    <form action="{% url 'add-comment' %}" method="POST" class="tm-contact-form" enctype="multipart/form-data">
+                        {% csrf_token %}
+                            <div class="form-row">
+                                <div class="col-12 form-group">
+                                    <textarea id="" cols="30" rows="10" class="form-control" placeholder="Comment" name="Comment"></textarea>
+                                </div>
+                                <div class="form-group col-12">
+                                    <button class="btn btn-primary btn-block" id="addsubmit" >SUBMIT</button>
+
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>                  
+                </div> 
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <hr>
+        <div class="page-container text-center">
+            <div class="page-content text-center">
+
+                <hr>
+
+                {% for post in page_obj %}
+                  <h5 class="card-title text-center">{{post.user.first_name}}</h5>  
+                    
+                    <p class="my-2">{{post.Comment}}</p>
+                </small>
+                    <div class="card-footer p-0 text-center">
+
+                        {% if user.is_authenticated %}
+
+                        <form action="{% url 'delete' post.id %}" method="POST" class="tm-contact-form" enctype="multipart/form-data">
+                            {% csrf_token %}
+    
+                                <button class="btn btn-outline-dark btn-sm" id="delete_btn" >DELETE</button>
+
+                        {% endif %}
+                    </div>
+        
+                  <hr/>
+
+                  <hr/>
+
+                    {% endfor %}
+                    <div class="pagination text-center">
+                        <span class="step-links center">
+                            {% if page_obj.has_previous %}
+                                <a href="?page=1">&laquo; first</a>
+                                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                            {% endif %}
+                
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                <span class="current">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                </span>
+                                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                   
+                
+            </div>
+
+            
+        </div>
+    </div>
+
+    
+
+	<!-- core  -->
+    <script src="{% static 'vendors/jquery/jquery-3.4.1.js' %}"></script>
+    <script src="{% static 'vendors/bootstrap/bootstrap.bundle.js' %}"></script>
+
+    <!-- JoeBLog js -->
+    <script src="{% static 'js/joeblog.js' %}"></script>
+
+</body>
+</html>
